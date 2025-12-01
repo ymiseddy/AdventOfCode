@@ -20,7 +20,7 @@ def part_01(filename="2025/day1s1.txt"):
         if p == 0:
             zcount += 1
 
-    print(f"Part 1: max= {maxr} zero count = {zcount}")
+    print(f"Part 1: zero count = {zcount}")
 
 def part_02(filename="2025/day1s1.txt"):
     steps = load_data(filename)
