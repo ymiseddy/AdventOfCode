@@ -12,10 +12,7 @@ def part_01(filename="2025/day1s1.txt"):
     steps = load_data(filename)
     p = 50
     zcount = 0
-    maxr = 0
     for (direction, count) in steps:
-        if count > maxr:
-            maxr = count
         if direction == "R":
             p = (p + count) % 100
         else:
