@@ -16,6 +16,8 @@ def part_01(filename="day1s1.txt"):
     for (start, end) in ranges:
         for n in range(start, end + 1):
             x = str(n)
+            if (len(x) % 2) != 0:
+                continue
             splitPoint = len(x) // 2
             firstHalf = x[:splitPoint]
             secondHalf = x[splitPoint:]
@@ -33,15 +35,17 @@ def part_02(filename="2025/day1s1.txt"):
             x = str(n)
             ln = len(x)
             for i in range(1, (ln//2) + 1):
+                if (ln % i) != 0:
+                    continue
                 s = x[:i]
-                ls = len(s)
-                if (ln % ls) == 0:
-                    if s * (ln // len(s)) == x:
-                        result += n
-                        break
+                if s * (ln // i) == x:
+                    result += n
+                    break
     print(f"Part 2: {result}")
 
 if __name__ == "__main__":
+    part_01("day2s1.txt")
     part_01("day2.txt")
     print()
+    part_02("day2s1.txt")
     part_02("day2.txt")

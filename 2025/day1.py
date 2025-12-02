@@ -1,5 +1,4 @@
 import tools as t
-from functools import reduce
 
 def load_data(filename):
     data = t.load(filename)
