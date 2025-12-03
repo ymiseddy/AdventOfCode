@@ -21,10 +21,6 @@ def part_01(filename="day3s1.txt"):
 
     print(f"Part 1: {result}")
 
-# len - 12 = 3
-# 987654321111111
-
-
 def part_02(filename="day1s1.txt"):
     result = 0
     data = load_data(filename)
@@ -40,7 +36,6 @@ def part_02(filename="day1s1.txt"):
                     max = int(c)
                     maxidx = idx + lidx + 1
             val.append(str(max))
-            # print("picked:", max, "at", maxidx)
             lidx = maxidx
         joined = ''.join(val)
         result += int(joined)
