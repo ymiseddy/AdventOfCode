@@ -7,40 +7,30 @@ def load_data(filename):
     return data
 
 
-def part_01(filename="day3s1.txt"):
+
+def joltage(data, count):
     result = 0
-    data = load_data(filename)
     for bank in data:
-        max = 0
-        for idx, c1 in enumerate(bank):
-            for c2 in bank[idx + 1:]:
-                val = int(c1 + c2)
-                if val > max:
-                    max = val
-        result += max
+        idx = 0
+        val = []
+        for b in range(count):
+            dist = len(bank) - (count - b) + 1
+            idx, v = max(enumerate(bank[:dist]), key=lambda x: int(x[1]))
+            val.append(v)
+            bank = bank[idx + 1:]
+        joined = ''.join(val)
+        result += int(joined)
+    return result
+
+def part_01(filename="day3s1.txt"):
+    data = load_data(filename)
+    result = joltage(data, count=2)
 
     print(f"Part 1: {result}")
 
 def part_02(filename="day1s1.txt"):
-    result = 0
     data = load_data(filename)
-    for bank in data:
-        val = []
-        lidx = 0
-        for b in range(12):
-            max = 0
-            maxidx = 0
-            ct = len(bank) - (12 - b) + 1
-            for idx, c in enumerate(bank[lidx:ct]):
-                if int(c) > max:
-                    max = int(c)
-                    maxidx = idx + lidx + 1
-            val.append(str(max))
-            lidx = maxidx
-        joined = ''.join(val)
-        result += int(joined)
-
-
+    result = joltage(data, count=12)
     print(f"Part 2: {result}")
 
 if __name__ == "__main__":
