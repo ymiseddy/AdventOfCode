@@ -20,11 +20,7 @@ def part_02(filename="2025/day1s1.txt"):
     p = 50
     zcount = 0
     for count in steps:
-        if count > 0:
-            ztimes = (p + count) // 100
-        else:
-            ztimes = (p - 1) // 100 - (p + count - 1) // 100
-
+        ztimes = (p - 1) // 100 - (p + count - 1) // 100
         zcount += ztimes 
         p = (p + count) % 100
 
