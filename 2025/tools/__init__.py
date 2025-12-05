@@ -21,3 +21,7 @@ def int_columns(data):
     return np.array(columns)
 
 
+cardinal_directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+cardinal_and_diagonal_directions = [(0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1)]
+
+
