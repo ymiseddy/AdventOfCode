@@ -25,8 +25,8 @@ def part_01(filename: str) -> None:
     ranges, ingredients = load_data(filename)
     result = 0
     for ingredient in ingredients:
-        for r in ranges:
-            if r[0] <= ingredient and ingredient <= r[1]:
+        for (min, max) in ranges:
+            if min <= ingredient and ingredient <= max:
                 result += 1
                 break
 
@@ -41,12 +41,11 @@ def part_02(filename: str) -> None:
     ranges.sort(key=lambda x: x[0])
 
     prev_max = 0
-    for r in ranges:
-        min = r[0]
-        max = r[1]
+    for (min, max) in ranges:
 
         # Catch overlapping ranges
         if max <= prev_max:
+            # This works becaus we sorted the ranges by min value
             continue
 
         if min <= prev_max:
