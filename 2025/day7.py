@@ -44,7 +44,6 @@ def part_02(filename: str) -> None:
 
     for line in data[1:]:
         splitters = [i for i,c in enumerate(line) if c == '^']
-        toppop = []
         for splitter in splitters:
             if splitter not in beams:
                 continue
