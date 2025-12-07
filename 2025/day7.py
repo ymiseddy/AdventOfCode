@@ -8,14 +8,67 @@ def load_data(filename) -> list:
     lines = data.splitlines()
     return lines
 
-def part_01(filename: str) -> None:
+def print_map(data) -> None:
+    for line in data:
+        print("".join(line))
+    print()
+
+def part_01(filename: str) -> float:
     result = 0
     data = load_data(filename)
+    data = [list(x) for x in data]
+    beams = set()
+    x = data[0].index("S")
+    beams.add(x)
+    assert x != -1
+
+    for line in data[1:]:
+        splitters = [i for i,c in enumerate(line) if c == '^']
+        for splitter in splitters:
+            if splitter not in beams:
+                continue
+            beams.remove(splitter)
+            beams.add(splitter-1)
+            beams.add(splitter+1)
+            result += 1
+
     print(f"Part 1: result = {result}")
 
 def part_02(filename: str) -> None:
     result = 0
     data = load_data(filename)
+    x = data[0].index("S")
+    assert x != -1
+
+    # Note, tried to keep an array of beams but it got too large.
+    # Instead, we use a dict to keep track of the counts of each
+    # beam position.
+
+    beams = {} 
+    beams[x] = 1
+
+    for line in data[1:]:
+        splitters = [i for i,c in enumerate(line) if c == '^']
+        toppop = []
+        for splitter in splitters:
+            if splitter not in beams:
+                continue
+
+            # Update the counts - adding to existing counts if needed
+            if splitter-1 in beams:
+                beams[splitter-1] += beams[splitter]
+            else:
+                beams[splitter-1] = beams[splitter]
+
+            if splitter+1 in beams:
+                beams[splitter+1] += beams[splitter]
+            else:
+                beams[splitter+1] = beams[splitter]
+
+            # Remove the original beam.
+            beams.pop(splitter)
+        mline = list(line)
+    result = sum(beams.values())
     print(f"Part 2: result = {result}")
 
 
