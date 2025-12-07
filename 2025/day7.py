@@ -8,11 +8,6 @@ def load_data(filename) -> list:
     lines = data.splitlines()
     return lines
 
-def print_map(data) -> None:
-    for line in data:
-        print("".join(line))
-    print()
-
 def part_01(filename: str) -> float:
     result = 0
     data = load_data(filename)
@@ -67,7 +62,6 @@ def part_02(filename: str) -> None:
 
             # Remove the original beam.
             beams.pop(splitter)
-        mline = list(line)
     result = sum(beams.values())
     print(f"Part 2: result = {result}")
 
