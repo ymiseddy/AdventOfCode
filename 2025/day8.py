@@ -31,36 +31,20 @@ def part_01(filename: str, maxcon: int) -> None:
         pointCircuit[d] = idx
         circuitPoints[idx] = set()
         circuitPoints[idx].add(d)
-        print(circuitPoints[idx])
-        assert pointCircuit[d] == idx
-        assert d in circuitPoints[idx]
 
     for (distance, combo) in distances[0:maxcon]:
         c0 = pointCircuit.get(combo[0], None)
-        assert combo[0] in circuitPoints[c0]
         c1 = pointCircuit.get(combo[1], None)
-        assert combo[1] in circuitPoints[c1]
-
-        if c1 not in circuitPoints:
-            raise ValueError("This should not happen")
-        if c0 not in circuitPoints:
-            raise ValueError("This should not happen")
 
         if c0 is not None and c1 is not None:
             # Need to merge circuits
             # Move points from c1 to c0
             if c0 == c1:
                 continue
-            print("Merging circuits", c0, c1)
-            assert combo[0] in circuitPoints[c0]
-            assert combo[1] in circuitPoints[c1]
             for point in circuitPoints[c1]:
                 pointCircuit[point] = c0
                 circuitPoints[c0].add(point)
             del circuitPoints[c1]
-            assert pointCircuit[combo[0]] == c0
-            assert pointCircuit[combo[1]] == c0
-            assert pointCircuit[combo[0]] == pointCircuit[combo[1]]
             continue
         else:
             raise "This should not happen"
@@ -92,15 +76,10 @@ def part_02(filename: str) -> None:
         pointCircuit[d] = idx
         circuitPoints[idx] = set()
         circuitPoints[idx].add(d)
-        print(circuitPoints[idx])
-        assert pointCircuit[d] == idx
-        assert d in circuitPoints[idx]
 
     for (distance, combo) in distances:
         c0 = pointCircuit.get(combo[0], None)
-        assert combo[0] in circuitPoints[c0]
         c1 = pointCircuit.get(combo[1], None)
-        assert combo[1] in circuitPoints[c1]
 
         if c1 not in circuitPoints:
             raise ValueError("This should not happen")
@@ -112,16 +91,10 @@ def part_02(filename: str) -> None:
             # Move points from c1 to c0
             if c0 == c1:
                 continue
-            print("Merging circuits", c0, c1)
-            assert combo[0] in circuitPoints[c0]
-            assert combo[1] in circuitPoints[c1]
             for point in circuitPoints[c1]:
                 pointCircuit[point] = c0
                 circuitPoints[c0].add(point)
             del circuitPoints[c1]
-            assert pointCircuit[combo[0]] == c0
-            assert pointCircuit[combo[1]] == c0
-            assert pointCircuit[combo[0]] == pointCircuit[combo[1]]
             if (len(circuitPoints) == 1):
                 print("All points connected")
                 result = combo[0][0]*combo[1][0]
