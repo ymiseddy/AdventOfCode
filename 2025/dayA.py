@@ -20,20 +20,6 @@ def part_01(filename: str) -> None:
 
     print(f"Part 1: result = {result}")
 
-
-def is_inside(p1: np.array, p2: np.array, grid: np.array) -> bool:
-    sign = np.sign(p2 - p1)
-    minx = min(p1[0], p2[0])
-    maxx = max(p1[0], p2[0])
-    miny = min(p1[1], p2[1])
-    maxy = max(p1[1], p2[1])
-
-    for x in range(minx, maxx+1):
-        for y in range(miny, maxy+1):
-            if grid[x,y] == 0:
-                return False
-    return True
-
 def trace_poly_edges(data) -> dict:
     edges = {}
     
