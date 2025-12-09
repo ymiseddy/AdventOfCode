@@ -1,6 +1,4 @@
 import numpy as np
-import itertools as it
-import math
 
 def load(name: str):
     with open(name, "r") as f:
@@ -36,6 +34,7 @@ def travelling_salesman(paths):
         costs[(start, end)] = int(cost)
         costs[(end, start)] = int(cost)
 
+
     min_cost = math.inf
     max_cost = 0
 
@@ -47,3 +46,4 @@ def travelling_salesman(paths):
         max_cost = max(max_cost, total_cost)
 
     return min_cost, max_cost
+7
