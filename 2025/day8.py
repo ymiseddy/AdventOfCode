@@ -81,11 +81,6 @@ def part_02(filename: str) -> None:
         c0 = pointCircuit.get(combo[0], None)
         c1 = pointCircuit.get(combo[1], None)
 
-        if c1 not in circuitPoints:
-            raise ValueError("This should not happen")
-        if c0 not in circuitPoints:
-            raise ValueError("This should not happen")
-
         if c0 is not None and c1 is not None:
             # Need to merge circuits
             # Move points from c1 to c0
