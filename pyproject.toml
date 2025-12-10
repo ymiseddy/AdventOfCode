@@ -6,6 +6,8 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "numpy>=2.3.4",
+    "pulp>=3.3.0",
     "scipy>=1.16.3",
     "sympy>=1.14.0",
+    "z3-solver>=4.15.4.0",
 ]
