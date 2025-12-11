@@ -15,7 +15,7 @@ def load_data(filename) -> list:
 
     return out_paths
 
-def find_paths_02(out_paths, start, end):
+def find_paths(out_paths, start, end):
     @cache
     def search(current):
         if current == end:
@@ -28,7 +28,7 @@ def find_paths_02(out_paths, start, end):
 def part_01(filename: str) -> None:
     result = 0
     data = load_data(filename)
-    result = find_paths_02(data, "you", "out")
+    result = find_paths(data, "you", "out")
     print(f"Part 1: result = {result}")
 
 
@@ -37,9 +37,9 @@ def part_02(filename: str) -> None:
     result = 0
     data = load_data(filename)
   
-    svr_fft = find_paths_02(data, "svr", "fft")
-    fft_dac = find_paths_02(data, "fft", "dac")
-    dac_out = find_paths_02(data, "dac", "out")
+    svr_fft = find_paths(data, "svr", "fft")
+    fft_dac = find_paths(data, "fft", "dac")
+    dac_out = find_paths(data, "dac", "out")
 
     result = svr_fft * fft_dac * dac_out
 
