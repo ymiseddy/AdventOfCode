@@ -1,7 +1,6 @@
 import tools as t
 import math
 import numpy as np
-import re
 import heapq
 
 boss = np.array((55, 8, 0))  # hit points, damage, mana
@@ -29,7 +28,7 @@ def list_spells():
         print(f"    Duration: {duration}")
 
 
-def simulate_fight(player, boss, spell_casts, hard: bool = False) -> (int, int):
+def simulate_fight(player, boss, spell_casts, hard: bool = False) -> tuple(int, int):
     """ Simulate a fight between player and boss given a sequence of spell casts.
     Return result (1=win, -1=loss, 0=incomplete) and remaining mana.
     """
@@ -157,34 +156,26 @@ def test_simulation():
     assert fight_result == 0
     assert remaining_mana == 250
 
-def general_dijkstra(initial_state, next_states, cost_function, result, quiet: bool = True):
-    heap = []
-    heapq.heappush(heap, (0, initial_state))
-    visited = set()
-    while heap:
-        cost, state = heapq.heappop(heap)
-        if state in visited:
-            continue
-        visited.add(state)
-        print("Visited:", state, cost)
-
-        # Process state
-        success, res = result(state)
-        if success:
-            return res, cost
-
-        # Generate new states
-        for next_state in next_states(res, state):
-            new_cost = cost_function(res, state, next_state)
-            if not quiet:
-                print("Adding new state to heap:", next_state, "with cost:", new_cost, "visited:", len(visited))
-            if next_state not in visited:
-                heapq.heappush(heap, (new_cost, next_state))
-
-    return None
-
 def cost_function(remaining_mana, state, next_state):
     return sum(spells[i][1] for i in next_state)
+
+def next_states(remaining_mana, state):
+    for idx, spell in enumerate(spells):
+        if idx in state and spell[6] > 0:
+            duration = math.ceil(spell[6] / 2)
+
+            # Find the last occurrence of idx in state
+            spell_index = len(state) - 1 - state[::-1].index(idx)
+
+            if spell_index + duration > len(state):
+                # Spell is already active
+                continue
+        if spell[1] > remaining_mana:
+            continue
+        new_state = state + (idx,)
+        yield new_state
+
+
 
 def dijkstra(initial_state, boss, player, hard: bool = False) -> int:
     result = 0
@@ -197,7 +188,7 @@ def dijkstra(initial_state, boss, player, hard: bool = False) -> int:
         if state in visited:
             continue
         visited.add(state)
-        print("Visited:", state, cost)
+        #print("Visited:", state, cost)
 
         # Process state
         player_state = player.copy()
@@ -216,139 +207,62 @@ def dijkstra(initial_state, boss, player, hard: bool = False) -> int:
             continue
 
         # Generate new states
-        for idx, spell in enumerate(spells):
-            if spell[1] > remaining_mana:
-                continue
 
-            if idx in state and spell[6] > 0:
-                duration = math.ceil(spell[6] / 2)
-
-                # Find the last occurrence of idx in state
-                spell_index = len(state) - 1 - state[::-1].index(idx)
-
-                if spell_index + duration > len(state):
-                    continue
-            new_state = state + (idx,)
+        new_states = next_states(remaining_mana, state)
+        for new_state in new_states:
+            new_cost = cost_function(remaining_mana, state, new_state)
             if new_state in visited:
                 continue
-
-            #new_cost = sum(spells[i][1] for i in new_state)
-            new_cost = cost_function(remaining_mana, state, new_state)
+            print("pushing", remaining_mana, new_state, new_cost)
             heapq.heappush(heap, (new_cost, new_state))
 
     return result, winning_cast
 
 def part_01(boss, player) -> None:
-    result = 0
-    moves = ()
-    result, cast = dijkstra(moves, boss, player)
-    casting = [spells[i][0] for i in cast]
-    cost = sum(spells[i][1] for i in cast)
-    print("Winning spell cast sequence:", casting)
-    print("Total mana cost:", cost)
-
-    print(f"Part 1: result = {result}")
-
-def part_01_general(boss, player) -> None:
-
-    def next_states(remaining_mana, state):
-        for idx, spell in enumerate(spells):
-            if idx in state and spell[6] > 0:
-                duration = math.ceil(spell[6] / 2)
-
-                # Find the last occurrence of idx in state
-                spell_index = len(state) - 1 - state[::-1].index(idx)
-
-                if spell_index + duration > len(state):
-                    # Spell is already active
-                    continue
-            if spell[1] > remaining_mana:
-                continue
-            new_state = state + (idx,)
-            yield new_state
-
-    def cost_function(remaining_mana, state, next_state):
-        return sum(spells[i][1] for i in next_state)
 
     def result(state):
         fight_result, remaining_mana = simulate_fight(player, boss, state)
         if fight_result == 1:
             return True, state
+        if fight_result == 0:
+            return None, remaining_mana
         else:
             return False, remaining_mana
 
     initial_state = ()
-    res, cost = general_dijkstra(initial_state, next_states, cost_function, result)
+    res, cost = t.dijkstra(initial_state, next_states, cost_function, result)
     casting = [spells[i][0] for i in res]
     total_cost = sum(spells[i][1] for i in res)
     print("Winning spell cast sequence:", casting)
     print("Total mana cost:", total_cost)
     print(f"Part 1 (general): result = {cost}")
 
-def part_02_general(boss, player) -> None:
+
+def part_02(boss, player) -> None:
 
     idx_spell_list = [(idx, spell) for idx, spell in enumerate(spells)]
 
-    def next_states(remaining_mana, state):
-        #print("Remaining mana:", remaining_mana, "Current state:", state)
-        for idx, spell in idx_spell_list:
-            if spell[1] > remaining_mana:
-                continue
-
-            if idx in state and spell[6] > 0:
-                duration = math.ceil(spell[6] / 2)
-
-                # Find the last occurrence of idx in state
-                spell_index = len(state) - 1 - state[::-1].index(idx)
-
-                if spell_index + duration > len(state):
-                    # Spell is already active
-                    continue
-            new_state = state + (idx,)
-            yield new_state
-
-
-    def result(state):
+    def visit(state):
         fight_result, remaining_mana = simulate_fight(player, boss, state, hard=True)
         if fight_result == 1:
             return True, state
+        if fight_result == 0:
+            return None, remaining_mana
         else:
             return False, remaining_mana
 
-    print(cost_function(None, None,(0, 0, 0, 0, 0, 0, 0)))
-    print(sum(spells[i][1] for i in (0, 0, 0, 0, 0, 0, 0)))
-    return -1
-
     initial_state = ()
-    res, cost = general_dijkstra(initial_state, next_states, cost_function, result, quiet=True)
+    res, cost = t.dijkstra(initial_state, next_states, cost_function, visit)
     casting = [spells[i][0] for i in res]
     total_cost = sum(spells[i][1] for i in res)
     print("Winning spell cast sequence:", casting)
     print("Total mana cost:", total_cost)
+    print()
     print(f"Part 2 (general): result = {cost}")
 
-def part_02(boss, player) -> None:
-    result = 0
-    moves = ()
-    result, cast = dijkstra(moves, boss, player, hard=True)
-    casting = [spells[i][0] for i in cast]
-    cost = sum(spells[i][1] for i in cast)
-    print("Winning spell cast sequence:", casting)
-    print("Total mana cost:", cost)
-    print(f"Part 2: result = {result}")
 
 
 if __name__ == "__main__":
-    # list_spells()
-    # test_simulation()
-    # exit()
-    #part_01_general(boss, player_base)
-    #part_01(boss, player_base)
-
+    part_01(boss, player_base)
     print()
-
-    #part_02_general(boss, player_base)
-
-    # Visited states: 410414
     part_02(boss, player_base)
-
