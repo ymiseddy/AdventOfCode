@@ -95,4 +95,4 @@ def dijkstra(initial_state, next_states, cost_function, result):
             if next_state not in visited:
                 heapq.heappush(heap, (new_cost, next_state))
 
-    return None
+    return None, None
