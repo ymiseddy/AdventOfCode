@@ -51,6 +51,6 @@ def part_01(filename: str) -> None:
 
 
 if __name__ == "__main__":
-    part_01("day12.txt")
+    part_01("dayC.txt")
 
 
